@@ -29,14 +29,38 @@ class placepickerViewController: UIViewController {
         placePicker = GMSPlacePicker(config: config)
         
         placePicker?.pickPlace(callback: { (place, error) -> Void in
+            
             if let error = error {
                 print("Pick Place error: \(error.localizedDescription)")
                 return
             }
             
             if let place = place {
+
+                //let street = place.addressComponents["street"]
+//                print(street)
                 self.nameLabel.text = place.name
                 self.addressLabel.text = place.formattedAddress!.components(separatedBy:", ").joined(separator:"\n")
+                let addressArray = place.formattedAddress?.components(separatedBy: ", ")
+                guard let streetAddress = addressArray?[0] else {
+                return
+                }
+                print(streetAddress)
+                
+                guard let cityAddress = addressArray?[1] else {
+                    return
+                }
+                print(cityAddress)
+                
+                guard let stateZipAddress = addressArray?[2] else {
+                    return
+                }
+                let zipIndex = stateZipAddress.index(stateZipAddress.startIndex, offsetBy: 3)
+                let zipAddress = stateZipAddress.substring(from: zipIndex)
+                print(zipAddress)
+                print("lat: \(place.coordinate.latitude)")
+                print("lon: \(place.coordinate.longitude)")
+                
             } else {
                 self.nameLabel.text = "No place selected"
                 self.addressLabel.text = ""
